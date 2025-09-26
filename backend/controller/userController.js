@@ -14,7 +14,10 @@ module.exports.registerUser = async (req, res, next) => {
     if (!errors.isEmpty()){
         return res.status(400).json({errors:errors.array()});
     }
-    const {fullname,email,password} = req.body;
+    const {fullname,email,password,accountType} = req.body;
+    if(!fullname || !email || !password || !accountType){
+        return res.status(400).json({message:'All fields are required'});
+    }
     const isUserAlready = await userModel.findOne({email});
     if (isUserAlready) {
         return res.status(400).json({message:'User already exists with this email'});
@@ -25,7 +28,8 @@ module.exports.registerUser = async (req, res, next) => {
     const user = await userService.createUser({
         fullname,
         email,
-        password:hashPassword
+        password:hashPassword,
+        accountType
     });
 
     const token = user.generateAuthToken();

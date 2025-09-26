@@ -1,65 +1,77 @@
-const userModel = require('../model/userModel');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const blackListTokenModel = require('../model/blacklistModel');
-const adminModel = require('../model/adminModel');
+const mongoose = require('mongoose');
+require("dotenv").config
+const User = require("../model/userModel")
+
+const jwt = require("jsonwebtoken");
+
+exports.auth = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) {
+    return res.status(401).json({ success: false, message: "No token provided" });
+  }
+
+  const token = authHeader.split(" ")[1]; // Expecting "Bearer <token>"
+  if (!token) {
+    return res.status(401).json({ success: false, message: "Invalid token format" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // attach user data to request
+    next();
+  } catch (err) {
+    return res.status(401).json({ success: false, message: "Invalid token" });
+  }
+};
 
 
-module.exports.authUser = async (req, res, next) => {
-    const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
-
-
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-
-    const isBlacklisted = await blackListTokenModel.findOne({ token: token });
-
-    if (isBlacklisted) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    try {
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await userModel.findById(decoded._id)
-
-        req.user = user;
-
-        return next();
-
-    } catch (err) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-}
-
-module.exports.authAdmin = async (req, res, next) => {
-    const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
-
-
-
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const isBlacklisted = await blackListTokenModel.findOne({ token: token });
-
-
-
-    if (isBlacklisted) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
+exports.IsUser = async (req, res, next) => {
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const Admin = await adminModel.findById(decoded._id)
-        req.admin= Admin;
+        if (req.user.accountType = !"user") {
+            res.status(400).json({
+                success: false,
+                message: "this route is for User"
+            })}
+            next()}
+    catch { 
+        return res.status(500).json({
+            success:false,
+            message:"Error Occure in IsUser"
+        }) }   }
 
-        return next()
-    } catch (err) {
-        console.log(err);
 
-        res.status(401).json({ message: 'Unauthorized' });
+exports.IsRestaurant=async(req,res,next)=>{
+    try{
+        if(req.user.accountType =!"mentor"){
+            return res.status(400).json({
+                success:false,
+                message:"This route is only for IsMentor"
+            })
+        }
+        next();
+    }
+    catch(error){
+return res.status(500).json({
+    success:false,
+    message:"Error ocuure in IsMentor"
+})
     }
 }
+exports.isAdmin = async (req, res, next) => {
+  try {
+    if (req.user.accountType !== "admin") {
+      return res.status(401).json({
+        success: false,
+        message: "This route is protected for Admin"
+      });
+    }
+    next();
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "User Role is not verified, Please try again",
+      error: error.message
+    });
+  }
+};
