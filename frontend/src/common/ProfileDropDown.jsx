@@ -59,7 +59,7 @@ const { auth, setAuth } = useContext(AuthContext);
               
             )}
         <li>
-                  <Link to={"/profile"}>
+                  <Link to={"/Dashboard"}>
                   
                   <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex flex-row items-center gap-1" >
                     <IoPerson />
