@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const connectToDb = require('./config/db');
 const userRoutes = require('./routes/userRoute');
 const adminRoutes = require('./routes/adminRoute');
+const mentoerRoutes = require('./routes/mentorRoute'); 
 
 
 const PORT = process.env.PORT || 5000;
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/users', userRoutes);
+app.use('/mentors',mentoerRoutes);
 app.use('/Admin', adminRoutes);
 
 
