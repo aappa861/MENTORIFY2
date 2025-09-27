@@ -66,7 +66,7 @@ exports.updateMentor = async (req, res) => {
     const userId = req.user.id;
 
       const mentor = await Mentor.findOneAndUpdate(
-      { owner: userId },       // filter
+      { mentor : userId },       // filter
       req.body,                // update fields
       { new: true, runValidators: true } // options
     );
@@ -81,7 +81,7 @@ exports.updateMentor = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "mentor updated successfully",
-      restaurant,
+      mentor,
     });
   } catch (error) {
     return res.status(500).json({
@@ -96,7 +96,7 @@ exports.deleteMentor = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const mentor = await Mentor.findOneAndDelete({ owner: userId });
+    const mentor = await Mentor.findOneAndDelete({ mentor : userId });
 
     if (!mentor) {
       return res.status(404).json({
@@ -123,8 +123,13 @@ exports.deleteMentor = async (req, res) => {
 
 
 exports.getMentor = async (req, res) => {
+  const userId = req.user.id; 
   try {
-    const mentor = await Mentor.findOne({ mentor: req.user.id });
+    console.log("req.user.id:", userId);
+    const mentor = await Mentor.findOne({ mentor: userId });
+
+
+    console.log("mentor found:", mentor);
     if (!mentor) return res.status(404).json({ success: false, message: "No Mentor found" });
 
     return res.status(200).json({ success: true, mentor });

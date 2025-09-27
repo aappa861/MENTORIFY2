@@ -4,7 +4,7 @@ const {auth}=require("../middleware/auth");
 
 
 router.post("/register",auth, mentorRegister);
-router.put("/updateMentor",auth, updateMentor);//mentor auth have to be add leter ishant
+router.post("/updateMentor",auth, updateMentor);//mentor auth have to be add leter ishant
 router.delete("/deleteMentor",auth, deleteMentor);
 
 router.get("/getallMentor", getAllMentor);
