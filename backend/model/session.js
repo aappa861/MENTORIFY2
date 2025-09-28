@@ -23,6 +23,6 @@ const sessionSchema = new mongoose.Schema({
         ref: "Mentor",} 
     })
 
-const Session = mongoose.model("Session", mentorSchema);
+const Session = mongoose.model("Session",sessionSchema);
 
 module.exports = Session;

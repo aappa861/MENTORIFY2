@@ -8,7 +8,7 @@ exports.SignUp = async (req, res) => {
     try {
         const { name, email, password, accountType } = req.body;
 
-        if (!name || !email || !password ) {
+        if (!name || !email || !password) {
             return res.status(400).json({ success: false, message: "Fill all details" });
         }
 
@@ -33,8 +33,9 @@ exports.SignUp = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({ 
-            success: false, message: "Error occurred in SignUp",error:error.message });
+        return res.status(500).json({
+            success: false, message: "Error occurred in SignUp", error: error.message
+        });
     }
 };
 
@@ -69,7 +70,7 @@ exports.Login = async (req, res) => {
 
         user.password = undefined; // hide password in response
 
-      
+
         const options = {
             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
             httpOnly: true
@@ -89,3 +90,43 @@ exports.Login = async (req, res) => {
         return res.status(500).json({ success: false, message: "Error occurred in Login" });
     }
 };
+
+
+
+exports.updateProfile = async (req, res) => {
+    try {
+        const userId=req.user.id
+        if(!userId){
+             return res.status(400).json({
+            success:false,
+            message:"user not found", })
+
+        }
+
+        const user=awaitUser.findByIdAndUpdate(userId,
+                                                req.body, 
+                                                  {new:true})
+
+
+        if(!user){
+              return res.status(400).json({
+            success:false,
+            message:"User not updated or does not exist",
+           
+        })
+        }
+        return res.status(200).json({
+            success:true,
+            message:"user Updateed successfully",
+            user
+        })
+     }
+    catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Error in updateProfile controller",
+            error: error.message
+        })
+    }
+}
+
