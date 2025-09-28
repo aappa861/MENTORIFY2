@@ -1,7 +1,7 @@
 const mongoose =require("mongoose");
 const cloudinary = require('cloudinary').v2;
 
-const cloudinationConfig =() => {
+module.exports.cloudinationConfig =() => {
     try{
         cloudinary.config({
             cloud_name: process.env.CLOUD_NAME,

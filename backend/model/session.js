@@ -1,4 +1,6 @@
-const mongoose =require("mongoose")
+const mongoose =require("mongoose");
+const User = require("./userModel");
+const Mentor = require("./mentorModel");
 
 const sessionSchema = new mongoose.Schema({
     title:{
@@ -13,16 +15,33 @@ const sessionSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    reatingandReview:{
+    category:{
+        type:String,
+        required:true
+
+    },
+    ratingandreview:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"RatingAndReview",
         required:true
     },
     mentor:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Mentor",} 
-    })
+        ref: "Mentor"
+    },
+    imagelink:{
+        type:String,
+        required:true
+    },
+    User:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }, 
+    
 
-const Session = mongoose.model("Session", mentorSchema);
+    })
+    
+
+const Session = mongoose.model("Session", sessionSchema);
 
 module.exports = Session;

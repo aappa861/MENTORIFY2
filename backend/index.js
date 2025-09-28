@@ -24,6 +24,8 @@ app.get('/', (req, res) => {
 app.use('/users', userRoutes);
 app.use('/mentors',mentoerRoutes);
 app.use('/Admin', adminRoutes);
+app.use('/api/v1/session', require('./routes/session'));
+//app.use('/api/v1/payment', require('./routes/PaymentRoute'));
 
 
 
