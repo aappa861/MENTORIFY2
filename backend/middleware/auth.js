@@ -41,7 +41,7 @@ exports.IsUser = async (req, res, next) => {
         }) }   }
 
 
-exports.IsRestaurant=async(req,res,next)=>{
+exports.IsMentor=async(req,res,next)=>{
     try{
         if(req.user.accountType =!"mentor"){
             return res.status(400).json({
