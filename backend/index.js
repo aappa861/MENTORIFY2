@@ -25,12 +25,10 @@ app.get('/', (req, res) => {
 app.use('/users', userRoutes);
 app.use('/mentors',mentoerRoutes);
 app.use('/Admin', adminRoutes);
-<<<<<<< HEAD
-//app.use('/api/v1/session', require('./routes/session'));
-//app.use('/api/v1/payment', require('./routes/PaymentRoute'));
-=======
 //app.use('/session',sessionRoutes)
->>>>>>> feature/frontend
+
+app.use('session', require('./routes/session'));
+//app.use('/payment', require('./routes/PaymentRoute'))
 
 
 
