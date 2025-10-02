@@ -1,5 +1,5 @@
 const mongoose=require("mongoose")
-const react = require("react")
+
 
 const reatingSchema=new mongoose.Schema({
 user:{

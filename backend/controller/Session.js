@@ -1,84 +1,138 @@
-//const mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const User=require("../model/userModel")
 const Session = require('../model/session');
-//const userModel = require('../model/userModel');
-//const mentorModel = require('../model/mentorModel');
 
-exports.addsession = async (req, res) => {
+const { uploadImageToCloudinary } = require("../utils/imageUpLoader")
+
+
+exports.createSession = async (req, res) => {
     try {
-      const { title, description, price, category, ratingandreview, imagelink} = req.body;
-  
-      console.log('Received request to add session.');
-  
-      
-      console.log('Creating a new session object...');
-      const session = new mentor({
-        id,
-        title,
-        category,
-        price,
-        imagelink,
-        ratingandreview,
-        description
-      });
-  
-      
-      console.log('Saving the session to the database...');
-      await session.save();
-  
-      
-      console.log('sesssion added successfully!');
-      res.status(201).json({ message: 'session added successfully!', session });
-    } catch (error) {
-      // If any error occurs, log the error and send an error response
-      console.error('Error adding product:', error);
-      res.status(500).json({ message: 'Oops! Something went wrong while adding the session.', error });
+        const { title, description, price, category } = req.body;
+        if (!title || !description || !price || !category) {
+            return res.status(400).json({
+                success: false,
+                message: "Fill all the details"
+            })
+        }
+        if (!req.files || !req.files.image) {
+            return res.status(400).json({
+                success: false,
+                message: "Image not get"
+            })
+        }
+        const image = req.files.image
+       // const image = req.files.image;
+
+// log to debug
+        console.log("image object:", image);
+
+        const imageUplode = await uploadImageToCloudinary(image,
+            process.env.FOLDER_NAME, "/session"
+        )
+
+        if (!imageUplode) {
+            return res.status(400).json({
+                success: false,
+                message: "Image Not uploaded"
+            })
+        }
+        const userId = req.user.userId
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        
+
+        const session = await Session.create(
+            {
+                title,
+                description,
+                price,
+                category,
+                image: imageUplode.url,
+            }
+        )
+        await User.findByIdAndUpdate(
+            userId,
+            { accountType: "mentor" },
+            { new: true }
+        );
+        return res.status(200).json({
+            success: true,
+            message: "Created Succesfully",
+            session
+        })
     }
-  };
-  
-  
-
-
-
-
-exports.getsession = async (req, res) => {
-    try {
-      const sessionId = req.Session.id; // Treat the id as a string
-      console.log('Searching for session with id:', sessionId);
-  
-      const sessionList = await mentor.find(); // Fetch all mentors
-      if (!sessionList.length) {
-        console.log('sesssion list is empty.');
-        return res.status(404).json({ message: 'session list is empty' });
-      }
-  
-     
-      const session = sessionList.find(session => Session.id === sessionId);
-      if (!session) {
-        console.log('session not found.');
-        return res.status(404).json({ message: 'session not found' });
-      }
-  
-      console.log('session found:', session);
-      res.json(session);
-    } catch (error) {
-      console.error('Error finding session:', error);
-      res.status(500).json({ message: 'Server error', error });
+    catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Error occurred in createSession",
+            error: error.message
+        });
     }
-  };
-  
-  
-  
-  exports.getallsession = async (req, res) => {
-    console.log('Received request to get session');
-    try {
-      console.log('Fetching sessions from the database...');
-      const sessions = await mentor.find();
-      console.log('sessions fetched successfully:', sessions);
-      console.log(`Total number of sessions fetched: ${sessions.length}`);
-      res.json(sessions);
-    } catch (error) {
-      console.error('Error fetching sessions:', error);
-      res.status(500).json({ message: 'Server error', error });
+}
+
+
+exports.getAllSession=async(req,res)=>{
+
+  try{
+      const session=await Session.find()
+    .populate("mentor" ,"name email")
+    .exec()
+
+    if(!session){return res.status(404).json({
+        success:false,
+        message:"product not found"
+    })}
+
+    return res.status(200).json({
+        success:true,
+        message:"Session found",
+        session
+    })
+  }
+catch(error){
+    return res.status(500).json({
+        success:false,
+        message:"Error get in all session",
+        error:error.message
+    })
+}
+}
+
+exports.getSession=async(req,res)=>{
+    try{
+        const sessionId=req.params
+        if(!sessionId){
+            return res.status(404).json({
+                success:false,message:"session not found"
+            })}
+      const session=await Session.findById(sessionId)
+      .populate("mentor","name email")
+      .exec()
+      
+      if(!session){
+        return res.status(404).json({
+            success:false,
+            message:"Session not found"
+        })}
+          
+        return res.status(200).json({
+            success:true,
+            message:"session founr",
+            session
+        })
+            
     }
-  };
- 
+    catch(error){
+        return res.status(500).json({
+            success:false,
+            error:error.message,
+            message:"Error get in getSession"
+        })
+    }
+}

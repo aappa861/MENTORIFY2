@@ -11,16 +11,26 @@ const sessionSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    Price:{
+    price:{
         type:Number,
         required:true
     },
     category:{
-        type:String,
-        required:true
+<<<<<<< HEAD
+        //type:String,
+       // required:true
 
-    },
-    ratingandreview:{
+   // },
+    //ratingandreview:{
+=======
+    //     type:String,required:true
+    // },
+    // Image:{
+    //     type:String,
+    //     required:true
+    // },
+    // reatingandReview:{
+>>>>>>> feature/frontend
         type:mongoose.Schema.Types.ObjectId,
         ref:"RatingAndReview",
         required:true
