@@ -7,7 +7,7 @@ const{getWatchlist,addSession,removeFromWatchlist}=require("../controller/watchL
 const{bookSession,getBookSession,getAllBooking}=require("../controller/sessionBook")
 
 //Session Routes
-router.post("/createSession",auth,IsMentor,createSession)
+router.post("/createSession",auth,createSession)
 router.get("/getAllSession",getAllSession);
 router.get("/getSession/:id",getSession)
 

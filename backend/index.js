@@ -10,11 +10,14 @@ const adminRoutes = require('./routes/adminRoute');
 const mentoerRoutes = require('./routes/mentorRoute'); 
 const sessionRoutes=require("./routes/sessionRoutes")
 
+const fileUpload = require('express-fileupload');
+
 
 const PORT = process.env.PORT || 5000;
 connectToDb.connectDB();
 
 //app.use(cors());
+app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

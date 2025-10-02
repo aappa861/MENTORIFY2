@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const User=require("../model/userModel")
 const Session = require('../model/session');
-const userModel = require('../model/userModel');
+
 const { uploadImageToCloudinary } = require("../utils/imageUpLoader")
 
 
@@ -9,18 +9,22 @@ exports.createSession = async (req, res) => {
     try {
         const { title, description, price, category } = req.body;
         if (!title || !description || !price || !category) {
-            return res.staus(400).json({
+            return res.status(400).json({
                 success: false,
                 message: "Fill all the details"
             })
         }
-        if (!req.files || req.files.image) {
+        if (!req.files || !req.files.image) {
             return res.status(400).json({
                 success: false,
                 message: "Image not get"
             })
         }
         const image = req.files.image
+       // const image = req.files.image;
+
+// log to debug
+        console.log("image object:", image);
 
         const imageUplode = await uploadImageToCloudinary(image,
             process.env.FOLDER_NAME, "/session"
@@ -41,12 +45,7 @@ exports.createSession = async (req, res) => {
             });
         }
 
-        if (!user) {
-            return res.status(400).json({
-                success: false,
-                message: "mentor not found"
-            })
-        }
+        
 
         const session = await Session.create(
             {
