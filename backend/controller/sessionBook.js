@@ -1,3 +1,8 @@
+const Session =require("../model/session")
+const Booking =require("../model/booking")
+
+
+
 exports.bookSession = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -54,12 +59,12 @@ exports.getBookSession = async (req, res) => {
     try {
         const userId = req.user.id
 
-        const booking = await Booking.findById({ user: userId })
+        const booking = await Booking.findOne({ user: userId })
             .populate("mentor", "name,email")
             .sort({ date: -1 });
 
         return res.status(200).json({
-            success: false,
+            success: true,
             booking,
             message: "session get succesfully"
         })

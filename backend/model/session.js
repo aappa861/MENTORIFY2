@@ -16,15 +16,15 @@ const sessionSchema = new mongoose.Schema({
     category:{
         type:String,required:true
     },
-    Image:{
+    image:{
         type:String,
         required:true
     },
-    reatingandReview:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"RatingAndReview",
-        required:true
-    },
+    // reatingandReview:{
+    //     type:mongoose.Schema.Types.ObjectId,
+    //     ref:"RatingAndReview",
+    //     required:true
+    // },
     mentor:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Mentor",} 

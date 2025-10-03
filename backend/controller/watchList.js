@@ -4,6 +4,7 @@ const Session = require("../model/session")
 
 exports.getWatchlist = async (req, res) => {
     try {
+        const userId=req.user.id
         const watchlist = await Watchlist.findOne({ user: userId })
             .populate("items.session");
 
@@ -23,7 +24,7 @@ exports.getWatchlist = async (req, res) => {
     catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Error get in getSesssion in watchlist",
+            message: "Error get in getWatchlist",
             error: error.message
         })
     }
@@ -40,16 +41,21 @@ exports.addSession = async (req, res) => {
                 message: "UserId not Get"
             })
         }
-        const watchlist = await Watchlist.findOne({ user:userId })
+        let watchlist = await Watchlist.findOne({ user: userId });
 
         if (!watchlist) {
             watchlist = await Watchlist.create({
                 user: userId,
-                items: [{ Session: sessionId || 1 }]
-            })
+                items: [{ session: sessionId }]
+            });
+        } else {
+            watchlist.items.push({ session: sessionId });
+            await watchlist.save();
         }
 
-        watchlist = await watchlist.populate("items.session")
+        watchlist = await watchlist.populate("items.session");
+
+
 
         return res.status(200).json({
             success: true,
@@ -85,7 +91,7 @@ exports.removeFromWatchlist = async (req, res) => {
         await watchlist.save();
 
         return res.status(200).json({
-            success: false, message: "Session removed"
+            success: true, message: "Session removed"
         })
     }
     catch (error) {
