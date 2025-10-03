@@ -13,7 +13,7 @@ router.get("/getSession/:id",getSession)
 
 //watchlist Routes
 router.post("/addToWatchlist",auth,addSession)
-router.get("/getWatchlist",getWatchlist)
+router.get("/getWatchlist",auth,getWatchlist)
 router.delete("/removeFromWatchlist",auth,removeFromWatchlist)
 
 //Booking Session
@@ -25,6 +25,6 @@ router.get("/getAllBookSession",auth,getAllBooking)//=>later add admin in theis 
 //Reatin Routes
 router.post("/reating",auth,createReating)
 router.get("/getAllReating",getAllReating)
-router.get("/getReatingById",getReatingById)
+router.get("/getReatingById/:id",getReatingById)
 
 module.exports=router
